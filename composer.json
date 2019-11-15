@@ -6,8 +6,8 @@
 	"homepage": "https://github.com/degami/lessql",
 	"authors": [
         {
-          "name": "degami@github.com",
-          "homepage": "https://github.com/degami/lessql"
+            "name": "Morris Brodersen",
+            "homepage": "https://morrisbrodersen.de"
         }
 	],
 	"autoload": {
