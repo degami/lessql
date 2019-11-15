@@ -759,7 +759,7 @@ class Database
         $suffix = "";
 
         if (!empty($where)) {
-            $suffix .= " WHERE " . implode(" AND ", $where);
+            $suffix .= " WHERE (" . implode(") AND (", $where).")";
         }
 
         if (!empty($orderBy)) {
@@ -803,7 +803,6 @@ class Database
         $column = $this->quoteIdentifier($column);
 
         if (count($value) === 1) {
-
             // use single column comparison if count is 1
 
             $value = $value[0];
@@ -814,7 +813,6 @@ class Database
                 return $column . " " . $bang . "= " . $this->quote($value);
             }
         } elseif (count($value) > 1) {
-
             // if we have multiple values, use IN clause
 
             $values = array();

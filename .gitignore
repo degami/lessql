@@ -2,3 +2,7 @@ coverage
 vendor
 .php_cs.cache
 composer.lock
+*.sublime-projectcompletions
+*.sublime-project
+*.sublime-workspace
+*.sublime-classdb
