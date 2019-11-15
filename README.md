@@ -1,5 +1,7 @@
 # THIS IS JUST A COPY OF THE ORIGINAL PROJECT, WITH A CHANGE REQUEST THAT I'VE SUBMITTED TO THE AUTHOR ALREADY APPLIED
 
+## [go to the original project](https://github.com/morris/lessql)
+
 # LessQL
 
 [![Build Status](https://travis-ci.org/morris/lessql.svg?branch=master)](https://travis-ci.org/morris/lessql)
