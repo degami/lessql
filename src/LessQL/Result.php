@@ -143,6 +143,8 @@ class Result implements \IteratorAggregate, \JsonSerializable
             $statement = $this->db->select($this->table, array(
                 'expr' => $this->select,
                 'where' => $this->where,
+                'groupBy' => $this->groupBy,
+                'having' => $this->having,
                 'orderBy' => $this->orderBy,
                 'limitCount' => $this->limitCount,
                 'limitOffset' => $this->limitOffset,
@@ -513,6 +515,36 @@ class Result implements \IteratorAggregate, \JsonSerializable
     }
 
     /**
+     * Add an GROUP BY column
+     *
+     * @param string $column
+     * @return $this
+     */
+    public function groupBy($column)
+    {
+        $clone = clone $this;
+
+        $clone->groupBy[] = $this->db->quoteIdentifier($column);
+
+        return $clone;
+    }
+
+    /**
+     * Add an HAVING expression
+     *
+     * @param string $having
+     * @return $this
+     */
+    public function having($having)
+    {
+        $clone = clone $this;
+
+        $clone->having[] = $having;
+
+        return $clone;
+    }
+
+    /**
      * Add an ORDER BY column and direction
      *
      * @param string $column
@@ -628,6 +660,8 @@ class Result implements \IteratorAggregate, \JsonSerializable
         $statement = $this->db->select($this->table, array(
             'expr' => $function,
             'where' => $this->where,
+            'groupBy' => $this->groupBy,
+            'having' => $this->having,
             'orderBy' => $this->orderBy,
             'limitCount' => $this->limitCount,
             'limitOffset' => $this->limitOffset,
@@ -723,6 +757,12 @@ class Result implements \IteratorAggregate, \JsonSerializable
 
     /** @var array */
     protected $whereParams = array();
+
+    /** @var array */
+    protected $groupBy = array();
+
+    /** @var array */
+    protected $having = array();
 
     /** @var array */
     protected $orderBy = array();

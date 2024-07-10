@@ -451,11 +451,12 @@ class Database
         $options = array_merge(array(
             'expr' => null,
             'where' => array(),
+            'groupBy' => array(),
+            'having' => array(),
             'orderBy' => array(),
             'limitCount' => null,
             'limitOffset' => null,
             'params' => array()
-
         ), $options);
 
         $query = "SELECT ";
@@ -471,7 +472,7 @@ class Database
         $table = $this->rewriteTable($table);
         $query .= " FROM " . $this->quoteIdentifier($table);
 
-        $query .= $this->getSuffix($options['where'], $options['orderBy'], $options['limitCount'], $options['limitOffset']);
+        $query .= $this->getSuffix($options['where'], $options['groupBy'], $options['having'], $options['orderBy'], $options['limitCount'], $options['limitOffset']);
 
         $this->onQuery($query, $options['params']);
 
@@ -754,12 +755,20 @@ class Database
      * @param int|null $limitOffset
      * @return string
      */
-    public function getSuffix($where, $orderBy = array(), $limitCount = null, $limitOffset = null)
+    public function getSuffix($where, $groupBy = array(), $having = array(), $orderBy = array(), $limitCount = null, $limitOffset = null)
     {
         $suffix = "";
 
         if (!empty($where)) {
             $suffix .= " WHERE (" . implode(") AND (", $where).")";
+        }
+
+        if (!empty($groupBy)) {
+            $suffix .= " GROUP BY " . implode(", ", $groupBy);
+        }
+
+        if (!empty($having)) {
+            $suffix .= " HAVING (" . implode(") AND (", $having).")";
         }
 
         if (!empty($orderBy)) {
