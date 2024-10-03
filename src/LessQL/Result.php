@@ -613,6 +613,29 @@ class Result implements \IteratorAggregate, \JsonSerializable
     }
 
     /**
+     * resets specific parts
+     * 
+     * @param string $partName
+     * @return $this
+     */
+    public function removePart($partName)
+    {
+        $clone = clone $this;
+
+        switch ($partName) {
+            case 'where': $clone->where = array(); break;
+            case 'groupBy': $clone->groupBy = array(); break;
+            case 'having': $clone->having = array(); break;
+            case 'orderBy': $clone->orderBy = array(); break;
+            case 'limitCount': $clone->limitCount = null; break;
+            case 'limitOffset': $clone->limitOffset = null; break;
+            case 'params': $clone->whereParams = array(); break;     
+        }
+
+        return $clone;
+    }
+
+    /**
      * Return minimum value from an expression
      *
      * @param string $expr
