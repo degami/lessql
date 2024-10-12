@@ -29,10 +29,10 @@ class Database
     protected array $sequences = [];
 
     /** @var null|callable */
-    protected $rewrite;
+    protected $rewrite = null;
 
     /** @var null|callable */
-    protected $queryCallback;
+    protected $queryCallback = null;
 
     /**
      * Constructor. Sets PDO to exception mode.
