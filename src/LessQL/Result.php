@@ -22,10 +22,10 @@ class Result implements \IteratorAggregate, \JsonSerializable
     protected Database $db;
 
     /** @var null|Row[] */
-    protected ?array $rows;
+    protected ?array $rows = null;
 
     /** @var null|Row[] */
-    protected ?array $globalRows;
+    protected ?array $globalRows = null;
 
     // Select information
 
@@ -33,7 +33,7 @@ class Result implements \IteratorAggregate, \JsonSerializable
     protected string $table;
 
     /** @var null|string */
-    protected ?string $select;
+    protected ?string $select = null;
 
     /** @var array */
     protected array $where = [];
@@ -51,24 +51,24 @@ class Result implements \IteratorAggregate, \JsonSerializable
     protected array $orderBy = [];
 
     /** @var null|int */
-    protected ?int $limitCount;
+    protected ?int $limitCount = null;
 
     /** @var null|int */
-    protected ?int $limitOffset;
+    protected ?int $limitOffset = null;
 
     // Members for results representing associations
 
     /** @var null|Result|Row */
-    protected null|Result|Row $parent_;
+    protected null|Result|Row $parent_ = null;
 
     /** @var null|bool */
-    protected ?bool $single;
+    protected ?bool $single = null;
 
     /** @var null|string */
-    protected ?string $key;
+    protected ?string $key = null;
 
     /** @var null|string */
-    protected ?string $parentKey;
+    protected ?string $parentKey = null;
 
     // Root members
 
@@ -517,10 +517,10 @@ class Result implements \IteratorAggregate, \JsonSerializable
      * Add a WHERE condition (multiple are combined with AND)
      *
      * @param string|array $condition
-     * @param string|array $params
+     * @param string|array|null $params
      * @return Result
      */
-    public function where(string|array $condition, string|array $params = []) : Result
+    public function where(string|array $condition, string|array|null $params = []) : Result
     {
         $clone = clone $this;
 

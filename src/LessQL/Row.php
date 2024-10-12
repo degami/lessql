@@ -20,7 +20,7 @@ class Row implements \ArrayAccess, \IteratorAggregate, \JsonSerializable
     protected array $_modified = [];
 
     /** @var null|string|array */
-    protected string|array|null $_originalId;
+    protected string|array|null $_originalId = null;
 
     /** @var array */
     protected array $_cache = [];
@@ -64,12 +64,12 @@ class Row implements \ArrayAccess, \IteratorAggregate, \JsonSerializable
      *
      * @param string $column
      * @param mixed $value
-     * @return $this
+     * @return void
      */
-    public function __set(string $column, mixed $value) : self
+    public function __set(string $column, mixed $value) : void
     {
         if (isset($this->_properties[$column]) && $this->_properties[$column] === $value) {
-            return $this;
+            return;
         }
 
         // convert arrays to Rows or list of Rows
@@ -89,8 +89,6 @@ class Row implements \ArrayAccess, \IteratorAggregate, \JsonSerializable
 
         $this->_properties[$column] = $value;
         $this->_modified[$column] = $value;
-
-        return $this;
     }
 
     /**
