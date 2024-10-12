@@ -12,10 +12,7 @@ class Literal
      *
      * @param string
      */
-    public function __construct($value)
-    {
-        $this->value = $value;
-    }
+    public function __construct(public string $value){ }
 
     /**
      * Return the literal value
@@ -26,7 +23,4 @@ class Literal
     {
         return $this->value;
     }
-
-    /** @var string */
-    public $value;
 }

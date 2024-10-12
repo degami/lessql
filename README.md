@@ -10,8 +10,8 @@ LessQL is a lightweight and performant alternative to Object-Relational Mapping 
 
 ## Installation
 
-Install LessQL via composer: `composer require morris/lessql`.
-LessQL requires PHP >= 5.3.4 and PDO.
+Install LessQL via composer: `composer require degami/lessql`.
+LessQL requires PHP >= 8.0 and PDO.
 
 ## Usage
 
