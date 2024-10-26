@@ -33,7 +33,7 @@ class Result implements \IteratorAggregate, \JsonSerializable
     protected string $table;
 
     /** @var null|string */
-    protected ?string $select = null;
+    protected string|array|null $select = null;
 
     /** @var array */
     protected array $where = [];
