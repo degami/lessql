@@ -513,6 +513,11 @@ class Result implements \IteratorAggregate, \JsonSerializable
         return $clone;
     }
 
+    public function expr(string $expr) : Result
+    {
+        return $this->select($expr);
+    }
+
     /**
      * Add a WHERE condition (multiple are combined with AND)
      *
@@ -613,15 +618,30 @@ class Result implements \IteratorAggregate, \JsonSerializable
      * @param string $direction
      * @return Result
      */
-    public function orderBy(string $column, string $direction = "ASC") : Result
+    public function orderBy(string $column, string $direction = "ASC", string $position = 'end') : Result
     {
         $clone = clone $this;
 
-        if ($direction === true) {
-            $clone->orderBy[] = $column;
-        } else {
-            $clone->orderBy[] = $this->db->quoteIdentifier($column) . " " . $direction;
+        switch($position) {
+            case 'start':
+                if ($direction === true) {
+                    array_unshift($clone->orderBy, $column);
+                } else {
+                    array_unshift($clone->orderBy, $this->db->quoteIdentifier($column) . " " . $direction);
+                }
+        
+                break;
+            case 'end':
+            default:
+                if ($direction === true) {
+                    $clone->orderBy[] = $column;
+                } else {
+                    $clone->orderBy[] = $this->db->quoteIdentifier($column) . " " . $direction;
+                }
+    
+                break;
         }
+
 
         return $clone;
     }
