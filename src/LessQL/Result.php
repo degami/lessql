@@ -269,9 +269,9 @@ class Result implements \IteratorAggregate, \JsonSerializable
     /**
      * Get the root result
      *
-     * @return Result
+     * @return Result|Row
      */
-    public function getRoot() : Result
+    public function getRoot() : Result|Row
     {
         if (!$this->parent_) {
             return $this;
