@@ -477,6 +477,7 @@ class Database
         $options = array_merge([
             'expr' => null,
             'where' => [],
+            'orWhere' => [],
             'groupBy' => [],
             'having' => [],
             'orderBy' => [],
@@ -498,7 +499,7 @@ class Database
         $table = $this->rewriteTable($table);
         $query .= " FROM " . $this->quoteIdentifier($table);
 
-        $query .= $this->getSuffix($options['where'], $options['groupBy'], $options['having'], $options['orderBy'], $options['limitCount'], $options['limitOffset']);
+        $query .= $this->getSuffix($options['where'], $options['orWhere'], $options['groupBy'], $options['having'], $options['orderBy'], $options['limitCount'], $options['limitOffset']);
 
         $this->onQuery($query, $options['params']);
 
@@ -776,17 +777,33 @@ class Database
      * Return WHERE/LIMIT/ORDER suffix for queries
      *
      * @param array $where
+     * @param array $orWhere
+     * @param array $groupBy
+     * @param array $having
      * @param array $orderBy
      * @param int|null $limitCount
      * @param int|null $limitOffset
      * @return string
      */
-    public function getSuffix(array $where, array $groupBy = [], array $having = [], array $orderBy = [], ?int $limitCount = null, ?int $limitOffset = null) : string
+    public function getSuffix(array $where, array $orWhere = [], array $groupBy = [], array $having = [], array $orderBy = [], ?int $limitCount = null, ?int $limitOffset = null) : string
     {
         $suffix = "";
 
-        if (!empty($where)) {
-            $suffix .= " WHERE (" . implode(") AND (", $where).")";
+        if (!empty($where) || !empty($orWhere)) {
+            $suffix .= " WHERE";
+
+            if (!empty($where)) {
+                $suffix .= " (" . implode(") AND (", array_map(function($el) { return (is_array($el) ? implode(" OR ", $el) : $el); }, $where)) . ")";
+            }
+
+            // where and orWhere arrays are joined by "AND"
+            if (!empty($where) && !empty($orWhere)) {
+                $suffix .= " AND";
+            }
+
+            if (!empty($orWhere)) {
+                $suffix .= " (" . implode(") OR (", array_map(function($el) { return (is_array($el) ? implode(" AND ", $el) : $el); }, $orWhere)) . ")";
+            }
         }
 
         if (!empty($groupBy)) {

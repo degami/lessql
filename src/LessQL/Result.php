@@ -39,6 +39,9 @@ class Result implements \IteratorAggregate, \JsonSerializable
     protected array $where = [];
 
     /** @var array */
+    protected array $orWhere = [];
+
+    /** @var array */
     protected array $whereParams = [];
 
     /** @var array */
@@ -204,6 +207,7 @@ class Result implements \IteratorAggregate, \JsonSerializable
             $statement = $this->db->select($this->table, [
                 'expr' => $this->select,
                 'where' => $this->where,
+                'orWhere' => $this->orWhere,
                 'groupBy' => $this->groupBy,
                 'having' => $this->having,
                 'orderBy' => $this->orderBy,
@@ -557,6 +561,45 @@ class Result implements \IteratorAggregate, \JsonSerializable
     }
 
     /**
+     * Add an OR WHERE condition (multiple are combined with OR)
+     *
+     * @param string|array $condition
+     * @param string|array|null $params
+     * @return Result
+     */
+    public function orWhere(string|array $condition, string|array|null $params = []) : Result
+    {
+        $clone = clone $this;
+
+        // conditions in key-value array
+        if (is_array($condition)) {
+            foreach ($condition as $c => $params) {
+                $clone = $clone->orWhere($c, $params);
+            }
+
+            return $clone;
+        }
+
+        // shortcut for basic "column is (in) value"
+        if (preg_match('/^[a-z0-9_.`"]+$/i', $condition)) {
+            $clone->orWhere[] = $clone->db->is($condition, $params);
+
+            return $clone;
+        }
+
+        if (!is_array($params)) {
+            $params = func_get_args();
+            array_shift($params);
+        }
+
+        $clone->orWhere[] = $condition;
+        $clone->whereParams = array_merge($clone->whereParams, $params);
+
+        return $clone;
+    }
+
+
+    /**
      * Add a "$column is not $value" condition to WHERE (multiple are combined with AND)
      *
      * @param string|array $column
@@ -580,6 +623,32 @@ class Result implements \IteratorAggregate, \JsonSerializable
 
         return $clone;
     }
+
+    /**
+     * Add a "or $column is not $value" condition to WHERE (multiple are combined with OR)
+     *
+     * @param string|array $column
+     * @param string|array|null $value
+     * @return Result
+     */
+    public function orWhereNot(string|array $column, string|array|null $value = null) : Result
+    {
+        $clone = clone $this;
+
+        // conditions in key-value array
+        if (is_array($column)) {
+            foreach ($column as $c => $params) {
+                $clone = $clone->orWhereNot($c, $params);
+            }
+
+            return $clone;
+        }
+
+        $clone->orWhere[] = $this->db->isNot($column, $value);
+
+        return $clone;
+    }
+
 
     /**
      * Add an GROUP BY column
@@ -774,6 +843,7 @@ class Result implements \IteratorAggregate, \JsonSerializable
         $statement = $this->db->select($this->table, [
             'expr' => $function,
             'where' => $this->where,
+            'orWhere' => $this->orWhere,
             'groupBy' => $this->groupBy,
             'having' => $this->having,
             'orderBy' => $this->orderBy,
@@ -813,6 +883,7 @@ class Result implements \IteratorAggregate, \JsonSerializable
             'table' => $this->table,
             'select' => $this->select,
             'where' => $this->where,
+            'orWhere' => $this->orWhere,
             'whereParams' => $this->whereParams,
             'orderBy' => $this->orderBy,
             'limitCount' => $this->limitCount,
